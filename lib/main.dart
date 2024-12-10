@@ -49,11 +49,12 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
                   controller: emailController,
                   decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Email"),
+                      border: OutlineInputBorder(), labelText: "Email"),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Email is required";
@@ -66,17 +67,81 @@ class _LoginState extends State<Login> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal:8,vertical:16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                 child: TextFormField(
-                  controller:passwordController,
+                  controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(alignLabelWithHint: border: OutlineInputBorder(), labeltext:"Password"),
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(), labelText: "Password"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Password is required";
+                    }
+                    if (value.length < 8) {
+                      return "Password must be at least 8 characters long";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16.0),
+                child: Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        //Navigate to Home page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(email: emailController.text),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please fill inputs')),
+                        );
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final String email;
+  const HomePage({super.key, required this.email,});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
+      body: Column(children: [
+        Text('Email:$email'),
+        Center(child: ElevatedButton(
+          onPressed:(){
+            Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(title: 'Login App'),
+        ),
+      );
+          },
+          child: const Text('Back to login page'),
+        
+        ),
+        ),
+      ],)
     );
   }
 }
